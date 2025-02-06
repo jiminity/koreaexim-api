@@ -2,8 +2,6 @@ import requests
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-import requests
-
 
 load_dotenv()
 today = datetime.today().strftime("%Y%m%d")
@@ -58,4 +56,3 @@ def update_readme():
 
 if __name__ == "__main__":
     update_readme()
-

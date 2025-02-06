@@ -1,0 +1,34 @@
+name: Update koreaexim in README
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # 매일 오후 3시 (UTC 기준 6시)
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 리포지토리 체크아웃
+        uses: actions/checkout@v3
+
+      - name: Python 설치
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+
+      - name: koreaexim API로 서울 날씨 업데이트
+        run: |
+          pip install requests python-dotenv
+          python update_koreaexim.py
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
+      - name: 변경 사항 커밋 및 푸시
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "자동 업데이트: 환율 정보 갱신" || echo "No changes to commit"
+          git push
+

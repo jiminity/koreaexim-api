@@ -17,9 +17,9 @@ def get_koreaexim():
     response = requests.get(URL)
     if response.status_code == 200:
         data = response.json()
-        ttb = data["main"]["ttb"]
-        cur_nm = data["cur_nm"][0]["description"]
-        tts = data["main"]["tts"]
+        ttb = data["ttb"]
+        cur_nm = data["cur_nm"]
+        tts = data["tts"]
         return f"국가/통화명	: {cur_nm}, 전신환(송금)받으실때: {ttb}°C, 전신환(송금)보내실때: {tts}%"
     else:
         return "환율 정보를 가져오는 데 실패했습니다."
@@ -29,11 +29,20 @@ def update_readme():
     koreaexim_info = get_koreaexim()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    if not koreaexim_info:
+        currency_table = "환율 정보를 가져오는 데 실패했습니다."
+    else:
+        # 마크다운 표 헤더와 구분선 추가
+        currency_table = """| 국가/통화명 | 전신환(송금)받으실때 | 전신환(송금)보내실때 |
+|------------|------------------|------------------|
+"""
+        currency_table += "\n".join(koreaexim_info)
+
     readme_content = f"""
 
 #Koreaexim API Status
 
-이 리포지토리는 Koreaexim API를 사용하여 환율 정보를 자동으로 업데이트합니다.
+이 리포지토리는 한국수출입은행 API를 사용하여 환율 정보를 자동으로 업데이트합니다.
 
 ## 현재 환율
 > {koreaexim_info}

@@ -2,6 +2,13 @@ import requests
 import os
 from datetime import datetime
 from dotenv import load_dotenv
+import requests
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+}
+
+response = requests.get(URL, headers=headers, timeout=10)
 
 load_dotenv()
 today = datetime.today().strftime("%Y%m%d")
@@ -56,3 +63,5 @@ def update_readme():
 
 if __name__ == "__main__":
     update_readme()
+
+

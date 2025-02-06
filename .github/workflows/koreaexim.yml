@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: koreaexim API로 서울 날씨 업데이트
+      - name: koreaexim API로 환율 정보 업데이트
         run: |
           pip install requests python-dotenv
           python update_koreaexim.py

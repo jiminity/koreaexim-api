@@ -4,16 +4,18 @@ from datetime import datetime
 from dotenv import load_dotenv
 import requests
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-}
-
-response = requests.get(URL, headers=headers, timeout=10)
 
 load_dotenv()
 today = datetime.today().strftime("%Y%m%d")
 API_KEY = os.getenv("AUTHKEY")
 URL = f"https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey={API_KEY}&searchdate={today}&data=AP01"
+
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+}
+
+response = requests.get(URL, headers=headers, timeout=10)
 
 README_PATH = "README.md"
 

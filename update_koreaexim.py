@@ -2,18 +2,15 @@ import requests
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-from datetime import datetime
+
 load_dotenv()
 today = datetime.today().strftime("%Y%m%d")
 API_KEY = os.getenv("AUTHKEY")
-URL = f"https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?{API_KEY}&searchdate={today}&data=AP01"
+URL = f"https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey={API_KEY}&searchdate={today}&data=AP01"
 
-
-# README 파일 경로
 README_PATH = "README.md"
 
-def get_weather():
-    """koreaexim API를 호출하여 서울의 날씨 데이터를 가져옴"""
+def get_currency():
     response = requests.get(URL)
     if response.status_code == 200:
         data = response.json()
@@ -26,22 +23,29 @@ def get_weather():
         return currency
     else:
         return []
-    
+
 def update_readme():
-    """README.md 파일을 업데이트"""
-    weather_info = get_weather()
+    """README.md 파일을 업데이트 (표 형식 적용)"""
+    currency_info = get_currency()
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    if not currency_info:
+        currency_table = "환율 정보를 가져오는 데 실패했습니다."
+    else:
+        # 마크다운 표 헤더와 구분선 추가
+        currency_table = """| 국가/통화명 | 전신환(송금)받으실때 | 전신환(송금)보내실때 |
+|------------|------------------|------------------|
+"""
+        currency_table += "\n".join(currency_info)
+
     readme_content = f"""
-
-# Koreaexim API Status
-
-이 리포지토리는 Koreaexim API를 사용하여 환율 정보를 자동으로 업데이트합니다.
+이 리포지토리는 한국수출입은행 API를 사용하여 환율 정보를 자동으로 업데이트합니다.
 
 ## 현재 환율
-> {weather_info}
 
-⏳ 업데이트 시간: {now} (UTC)
+{currency_table}
+
+:hourglass_flowing_sand: 업데이트 시간: {now} (UTC)
 
 ---
 자동 업데이트 봇에 의해 관리됩니다.
@@ -52,4 +56,3 @@ def update_readme():
 
 if __name__ == "__main__":
     update_readme()
-

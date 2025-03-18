@@ -33,3 +33,70 @@
 
 ---
 자동 업데이트 봇에 의해 관리됩니다.
+
+# koreaexim-api
+
+## 📌 update_koreaexim.py 실행 결과
+이 프로젝트는 한국수출입은행 API를 활용하여 데이터를 가져오고, 이를 가공하여 출력하는 Python 스크립트(`update_koreaexim.py`)를 포함하고 있습니다.
+
+### ✅ 실행 방법
+1. `.env` 파일을 생성하고 API 키를 설정합니다.  
+2. Python 환경에서 아래 명령어를 실행합니다.  
+
+   **실행 명령어:**  
+   ```
+   python update_koreaexim.py
+   ```
+
+3. 실행 결과는 콘솔에 출력됩니다.  
+
+---
+
+# 🚀 Airflow 기반으로 마이그레이션
+
+기존 `update_koreaexim.py` 스크립트를 **Airflow DAG**로 전환하여 자동 실행 및 모니터링이 가능하도록 개선하였습니다.  
+Airflow Scheduler가 주기적으로 API를 호출하고, 데이터를 CSV 파일(`data/exchange_rates.csv`)로 자동 저장·업데이트합니다.
+
+## 📋 마이그레이션 개요
+- **기존 방식:** Python 스크립트를 수동 실행하여 데이터를 가져옴.  
+- **변경 방식:** Airflow DAG을 사용하여 주기적으로 실행되도록 개선.  
+- **주요 기능:**  
+  - API 모니터링  
+  - 자동 CSV 저장 및 업데이트  
+  - Airflow UI를 통한 실행 로그 확인  
+
+---
+
+## ⚙️ 변경 사항
+
+| 항목 | 기존 방식 (`update_koreaexim.py`) | Airflow 적용 방식 |
+|------|---------------------------------|------------------|
+| 실행 방식 | 수동 Python 실행 | Airflow DAG (스케줄러 자동 실행) |
+| 결과 저장 | 콘솔 출력 또는 파일 저장 | `data/exchange_rates.csv` 자동 업데이트 |
+| 모니터링 | 없음 | Airflow UI에서 상태 확인 |
+| 환경 변수 관리 | `.env` 직접 로드 | `python-dotenv` + Airflow Variable |
+
+---
+
+## 🛠 설치 및 실행 방법
+
+### 1️⃣ Docker Compose를 사용하여 Airflow 실행  
+아래 명령어를 차례로 실행하여 Airflow를 실행합니다.  
+```
+docker-compose up airflow-init
+docker-compose up 
+```
+
+### 2️⃣ Airflow UI 접속  
+- **URL:** [http://localhost:8080](http://localhost:8080)  
+
+---
+
+## 📌 DAG 실행 흐름
+
+1. `exchange_rate_monitoring` DAG가 설정된 주기(예: 1시간마다)마다 실행됨.  
+2. 한국수출입은행 API를 호출하여 환율 데이터를 가져옴.  
+3. 데이터를 pandas로 처리 후 `data/exchange_rates.csv`에 저장.  
+4. 실행 로그는 Airflow UI에서 확인 가능.  
+
+
